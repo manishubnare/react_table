@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-function ColorsRenderer(props) {
+function DropDown(props) {
     const[color, setColor] = useState(props.value);
 
     const onColorChange = (event) => {
@@ -20,4 +20,4 @@ function ColorsRenderer(props) {
     )
 }
 
-export default ColorsRenderer;
+export default DropDown;
