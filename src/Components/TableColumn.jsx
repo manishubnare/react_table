@@ -56,6 +56,8 @@ const TabelColumn = () => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
+        params.api.setServerSideDatasource(rowData);
+
     };
 
     const onGridReadyOne = (param) => {
@@ -74,7 +76,7 @@ const TabelColumn = () => {
 
     const addItems = (addIndex) => {
         var newItems = [createNewRowData()];
-        var res = gridApi.applyTransaction({
+        var res = gridApi.applyServerSideTransaction({
           add: newItems,
           addIndex: addIndex,
         });
@@ -201,7 +203,9 @@ const TabelColumn = () => {
               }}
                singleClickEdit={true}
                ref = {gridRef}
-               rowData={rowData}
+               rowModelType={'serverSide'}
+               serverSideStoreType={'full'}
+               animateRows={true}
                rowSelection="multiple"
                animateRows={true}
                onCellValueChanged = {onCellValueChanged}
