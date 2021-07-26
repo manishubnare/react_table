@@ -56,8 +56,6 @@ const TabelColumn = () => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
-        params.api.setServerSideDatasource(newData);
-
     };
 
     const onGridReadyOne = (param) => {
@@ -76,7 +74,7 @@ const TabelColumn = () => {
 
     const addItems = (addIndex) => {
         var newItems = [createNewRowData()];
-        var res = gridApi.applyServerSideTransaction({
+        var res = gridApi.applyTransaction({
           add: newItems,
           addIndex: addIndex,
         });
@@ -210,7 +208,7 @@ const TabelColumn = () => {
                onGridReady={onGridReady}>
                <AgGridColumn field="id"  pinned="left" resizable={true} checkboxSelection ={true} sortable={true} filter={true} style={{width: 25}} ></AgGridColumn>
                <AgGridColumn field="name" headerTooltip="Name" pinned="left" sortable={true} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
-               <AgGridColumn field="email" headerTooltip="Email" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter" cellStyle = {params => params.value <= 2  ? {background : 'yellow'} : null} cellClassRules ={ {'bold-and-red': 'x<=2'}}></AgGridColumn>
+               <AgGridColumn field="email" headerTooltip="Email" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter" ></AgGridColumn>
                <AgGridColumn field="gender" sortable={true} cellRenderer="genderCellRenderer" cellEditor="agSelectCellEditor" cellEditorParams={{ values: ['Male', 'Female'] , cellHeight: 50 , cellRenderer: 'genderCellRenderer',}}/>
                <AgGridColumn field="dob" sortable={true} editable={true}  filter={true} resizable={true} filter="agTextColumnFilter" cellEditor="tableDatePicker"  ></AgGridColumn>
                <AgGridColumn field="country" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter" cellEditor="agSelectCellEditor" cellEditorParams={{ cellHeight: 50, values: ['Ireland', 'USA','India'] }}></AgGridColumn>
