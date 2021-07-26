@@ -230,7 +230,8 @@ const TabelColumn = () => {
                 minWidth: 120,
                 editable: false,
             }}
-            rowData={newrowData}
+            rowModelType={'serverSide'}
+            serverSideStoreType={'full'}
             rowSelection="multiple"
             onGridReady = {onGridReadyOne}
             animateRows={true}>
