@@ -60,7 +60,6 @@ const TabelColumn = () => {
     const onGridReadyOne = (param) => {
         setGridApiOne(param.api);
         setGridColumnApiOne(param.columnApi);
-
     }
 
     const getRowData = () => {
@@ -114,10 +113,6 @@ const TabelColumn = () => {
                     message = 'Error';
                 }
             }
-            if(selectedData.find(x=> x == node.data)){
-                currrowData.push(node.data);
-            }
-
         });
         var res = GridApi.applyTransaction({ add: currrowData });
         alert(message);
