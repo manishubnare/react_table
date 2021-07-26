@@ -117,7 +117,7 @@ const TabelColumn = () => {
                 }
             }
         });
-        var res = GridApi.applyTransaction({ add: currrowData });
+        var res = GridApi.applyServerSideTransaction({ add: currrowData });
         alert(message);
     }
 
