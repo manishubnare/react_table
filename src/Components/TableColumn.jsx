@@ -37,24 +37,27 @@ const TabelColumn = () => {
    const rowData = [
     {id:1, name: "test1", email: "test1@gmail.com", gender:'Male',dob:'22/07/2019',country:'India' , city:'Varansai'},
     {id:2, name: "test2", email: "test2@gmail.com", gender:'Male',dob:'22/07/2019',country:'India' , city:'Kanpur'},
-    {id:3, name: "test2", email: "test3@gmail.com", gender:'Male',dob:'22/07/2019',country:'India' , city:'Lucknow'}
+    {id:3, name: "test3", email: "test3@gmail.com", gender:'Male',dob:'22/07/2019',country:'Ireleand' , city:'Dublin'}
    ];
 
    var newrowData = [];
 
     var newData = {
-        id : 'id',
-        name : 'name',
-        email : 'email',
-        gender : 'gender',
-        dob : 'date',
-        country : 'country',
-        city : 'city'
+        id : '',
+        name : '',
+        email : '',
+        gender : '',
+        dob : '',
+        country : '',
+        city : ''
     };
 
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
+
+        params.api.setServerSideDatasource(newData);
+
     };
 
     const onGridReadyOne = (param) => {
@@ -73,7 +76,7 @@ const TabelColumn = () => {
 
     const addItems = (addIndex) => {
         var newItems = [createNewRowData()];
-        var res = gridApi.applyTransaction({
+        var res = gridApi.applyServerSideTransaction({
           add: newItems,
           addIndex: addIndex,
         });
@@ -81,7 +84,8 @@ const TabelColumn = () => {
 
     const onRemoveSelected = () => {
         var selectedData = gridApi.getSelectedRows();
-        var res = gridApi.applyTransaction({ remove: selectedData });
+        var res =gridApi.applyTransaction({ remove: selectedData });
+    
        
     };
     
@@ -96,29 +100,55 @@ const TabelColumn = () => {
         var res = gridApi.applyTransaction({ remove: rowData });
     };
 
+    var onSubmitvalue = false;
     const onSubmit = () =>{
         var currrowData = [];
         var selectedData = gridApi.getSelectedRows();
+        var message = '';
+        onSubmitvalue = true;
         gridApi.forEachNode(function (node) {
-            if(!newrowData.find(x => x == node.data) && selectedData.find(x => x == node.data) && newData == node){
-                currrowData.push(node.data);
-                newrowData.push(node.data);
-            }else if(newData == node){
-
-            } 
+            if(!newrowData.find(x => x == node.data)){
+                if(selectedData.find(x=> x == node.data) && !(isNotEqual(newData , node.data))){
+                    currrowData.push(node.data);
+                    newrowData.push(node.data);
+                    message = 'Submitted'
+                }else if(isNotEqual(newData , node.data)){
+                    message = 'Error';
+                }
+            }
         });
         var res = GridApi.applyTransaction({ add: currrowData });
-        alert('Submitted');
+        alert(message);
     }
 
-    const [inputDate , setInputDate] = useState(moment());
-    function Date(){
-        // const customFormat = value => `${value.format(dateFormat)}`;
-        return(
-            <DatePicker value = {inputDate} onChange={(value , e) => setInputDate(moment(e))} />
-        );
+    const isNotEqual = (obj1 , obj2) => {
+        const Obj1key = Object.keys(obj1);
+        const Obj2key = Object.keys(obj2);
 
+        if(Obj1key.length != obj2.length){
+            return true;
+        }
+
+        for(let objkey of Obj1key){
+            if(obj1[objkey] !== obj2[objkey]){
+                return true;
+            }
+        }
+
+        return false;
     }
+
+    
+    // function Date(){
+    //     const [inputDate , setInputDate] = useState(moment());
+    //     const dateFormat = "DD/MM/YYYY"
+    //     const customFormat = value => `${value.format(dateFormat)}`;
+    //     return(
+    //         <DatePicker onChange={(value , e) => setInputDate(moment(e)) } format={customFormat} />
+    //     );
+
+    // }
+
 
     const updateItems = () => {
         var itemsToUpdate = [];
@@ -151,7 +181,6 @@ const TabelColumn = () => {
         })
     }
 
-
    return ([
         <div style = {{textAlign: 'center',marginTop:10}}>
                 <Button className = "btn btn-outline-primary" style = {{marginLeft:5 , marginRight:5}} onClick={() => addItems()}>Add Items</Button>
@@ -177,13 +206,13 @@ const TabelColumn = () => {
                rowData={rowData}
                rowSelection="multiple"
                animateRows={true}
-               onCellValueChanged={onCellValueChanged}
+               onCellValueChanged = {onCellValueChanged}
                onGridReady={onGridReady}>
-               <AgGridColumn field="id" pinned="left" resizable={true} checkboxSelection ={true} sortable={true} filter={true} style={{width: 25}}></AgGridColumn>
-               <AgGridColumn field="name" pinned="left" sortable={true} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
-               <AgGridColumn field="email" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
+               <AgGridColumn field="id"  pinned="left" resizable={true} checkboxSelection ={true} sortable={true} filter={true} style={{width: 25}} ></AgGridColumn>
+               <AgGridColumn field="name" headerTooltip="Name" pinned="left" sortable={true} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
+               <AgGridColumn field="email" headerTooltip="Email" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter" cellStyle = {params => params.value <= 2  ? {background : 'yellow'} : null} cellClassRules ={ {'bold-and-red': 'x<=2'}}></AgGridColumn>
                <AgGridColumn field="gender" sortable={true} cellRenderer="genderCellRenderer" cellEditor="agSelectCellEditor" cellEditorParams={{ values: ['Male', 'Female'] , cellHeight: 50 , cellRenderer: 'genderCellRenderer',}}/>
-               <AgGridColumn field="dob" sortable={true} onClick = {Date} editable={true}  filter={true} resizable={true} filter="agTextColumnFilter" cellEditor="tableDatePicker" ></AgGridColumn>
+               <AgGridColumn field="dob" sortable={true} editable={true}  filter={true} resizable={true} filter="agTextColumnFilter" cellEditor="tableDatePicker"  ></AgGridColumn>
                <AgGridColumn field="country" sortable={true} filter={true} resizable={true} filter="agTextColumnFilter" cellEditor="agSelectCellEditor" cellEditorParams={{ cellHeight: 50, values: ['Ireland', 'USA','India'] }}></AgGridColumn>
                <AgGridColumn field="city" cellEditor="agSelectCellEditor" cellEditorParams={cellCellEditorParams} sortable={true} filter={true} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
                <AgGridColumn onClick = {onDeleteSelected} editable={false} cellRenderer = "btnCellRenderer"></AgGridColumn>
@@ -203,7 +232,7 @@ const TabelColumn = () => {
             rowSelection="multiple"
             onGridReady = {onGridReadyOne}
             animateRows={true}>
-            <AgGridColumn field="id" sortable={true} editable = {false} filter={true}></AgGridColumn>
+            <AgGridColumn field="id" filter="agNumberColumnFilter" sortable={true} editable = {false} filter={true}></AgGridColumn>
             <AgGridColumn field="name" sortable={true} editable = {false} resizable={true} filter="agTextColumnFilter"></AgGridColumn>
             <AgGridColumn field="email" sortable={true} editable = {false} filter={true} filter="agTextColumnFilter"></AgGridColumn>
             <AgGridColumn field="gender" sortable={true} editable = {false} filter={true} filter="agTextColumnFilter"></AgGridColumn>
