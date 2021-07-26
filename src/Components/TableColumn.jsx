@@ -63,6 +63,8 @@ const TabelColumn = () => {
     const onGridReadyOne = (param) => {
         setGridApiOne(param.api);
         setGridColumnApiOne(param.columnApi);
+
+        param.api.setServerSideDatasource(newrowData);
     }
 
     const getRowData = () => {
