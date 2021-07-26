@@ -114,6 +114,10 @@ const TabelColumn = () => {
                     message = 'Error';
                 }
             }
+            if(selectedData.find(x=> x == node.data)){
+                currrowData.push(node.data);
+            }
+
         });
         var res = GridApi.applyTransaction({ add: currrowData });
         alert(message);
